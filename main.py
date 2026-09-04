@@ -1,16 +1,54 @@
-# This is a sample Python script.
+import random
+import hangman_words
+import hangman_art
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+print(hangman_art.logo)
+word_list = hangman_words.word_list
+chosen_word = random.choice(word_list)
+lives = 6
+placeholder = ""
+word_length = len(chosen_word)
 
+for position in range(word_length):
+    placeholder += "_"
+print("Word to guess: " + placeholder)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+game_over = False
+correct_letters = []
 
+while not game_over:
+    print(f"****************************{lives}/6 LIVES LEFT****************************")
+    guess = input("Guess a letter: ").lower()
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+    if guess in correct_letters:
+        print(f"You've already guessed {guess}!")
+        continue
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    display = ""
+
+    for letter in chosen_word:
+        if letter == guess:
+            display += letter
+            correct_letters.append(guess)
+        elif letter in correct_letters:
+            display += letter
+        else:
+            display += "_"
+
+    print("Word to guess: " + display)
+
+    if guess not in chosen_word:
+        print(f"****************************\n"
+              f"'{guess}' is not in the word")
+        lives -= 1
+
+        if lives == 0:
+            game_over = True
+            print(f"***********************YOU LOSE**********************\n"
+                  f"The word was: {chosen_word}\n")
+
+    if "_" not in display:
+        game_over = True
+        print("****************************YOU WIN****************************")
+
+    print(hangman_art.stages[lives])
